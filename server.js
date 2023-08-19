@@ -5,13 +5,13 @@ const colors = require ('colors')
 const dotenv = require('dotenv')
 const connectDB = require('./config/db')
 
-//env config
+//.env configuration
 dotenv.config()
 
-//import routes
+//Import routes
 const userRoutes=require('./routes/userRoutes')
 
-//mongodb connection
+//Mongodb connection
 connectDB()
 
 //rest object
