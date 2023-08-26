@@ -10,6 +10,7 @@ dotenv.config()
 
 //Import routes
 const userRoutes=require('./routes/userRoutes')
+const blogRoutes=require("./routes/blogRoutes")
 
 //Mongodb connection
 connectDB()
@@ -33,6 +34,7 @@ app.get('/',(request,response)=>{
 
 //routes get method on userRoutes
 app.use('/api/v1/user',userRoutes)
+app.use('/api/v1/blog',blogRoutes)
 
 //PORT
 const PORT = process.env.PORT || 8080;
