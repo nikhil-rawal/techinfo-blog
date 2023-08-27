@@ -1,5 +1,6 @@
-const { default: mongoose } = require("mongoose")
+const mongoose = require("mongoose")
 const blogModel = require("../models/blogModel")
+const userModel = require("../models/userModel")
 
 //GET All Blogs
 exports.getAllBlogController = async (request,response) => {
@@ -33,17 +34,34 @@ exports.getAllBlogController = async (request,response) => {
 //Create Blog
 exports.createBlogController = async (request,response) => {
     try {
-        const {title,description,image} = request.body
+        const {title,description,image,user} = request.body
 
         //validation - missing fields
-        if( !title || !description || !image) {
+        if( !title || !description || !image || !user) {
             response.status(400).send({
                 success:false,
                 message:"Please fill everything"
             })
         }
 
-        const newBlog = new blogModel({title,description,image})
+        const existingUser = await userModel.findById(user)
+        //user validation - check if user does not exist
+        if (!existingUser) {
+            return response.status(400).send({
+                success:false,
+                message:"Unable to find user ;; blogController"
+            })
+        }
+
+        // To get specified blogs for a specified user
+
+        const newBlog = new blogModel({title,description,image,user})
+        const session = await mongoose.startSession()
+        session.startTransaction()
+        await newBlog.save({session})
+        existingUser.blogs.push(newBlog)
+        await existingUser.save({session})
+        await session.commitTransaction()
         await newBlog.save()
         return response.status(201).send({
             success:true,
@@ -85,7 +103,9 @@ exports.updateBlogController = async (request,response) => {
 //Delete Blog
 exports.deleteBlogController = async (request,response) => {
     try {
-        const deletedBlog = await blogModel.findByIdAndDelete(request.params.id)
+        const deletedBlog = await blogModel.findOneAndDelete(request.params.id).populate("user")
+        await deletedBlog.user.blogs.pull(deletedBlog)
+        await deletedBlog.user.save()
         if (!deletedBlog) {
             return response.status(404).send({
                 success:false,
