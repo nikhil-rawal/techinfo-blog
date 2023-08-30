@@ -79,7 +79,7 @@ exports.createBlogController = async (request,response) => {
     }
 }
 
-//Update Blog
+//Update Blog Controller
 exports.updateBlogController = async (request,response) => {
     try {
         const {id} = request.params
