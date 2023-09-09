@@ -34,9 +34,10 @@ exports.getAllBlogController = async (request,response) => {
 //Create Blog
 exports.createBlogController = async (request,response) => {
     try {
+        //Here, user is User's ID.
         const {title,description,image,user} = request.body
 
-        //validation - missing fields
+        //validation - missing fields - even if no user ID, throw error
         if( !title || !description || !image || !user) {
             response.status(400).send({
                 success:false,
@@ -54,8 +55,8 @@ exports.createBlogController = async (request,response) => {
         }
 
         // To get specified blogs for a specified user
-
         const newBlog = new blogModel({title,description,image,user})
+        //first start session, then start transaction, then save blog based on sessions, then save commit transaction, again save blog
         const session = await mongoose.startSession()
         session.startTransaction()
         await newBlog.save({session})
