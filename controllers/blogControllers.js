@@ -56,7 +56,9 @@ exports.createBlogController = async (request,response) => {
 
         // To get specified blogs for a specified user
         const newBlog = new blogModel({title,description,image,user})
+
         //first start session, then start transaction, then save blog based on sessions, then save commit transaction, again save blog
+        // session start -> transaction start -> save blog via session -> save transaction -> save user 
         const session = await mongoose.startSession()
         session.startTransaction()
         await newBlog.save({session})
