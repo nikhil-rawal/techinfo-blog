@@ -8,6 +8,11 @@ const authSlice = createSlice({
     reducers:{
         login(state){
             state.isLogin=true
+        },
+        logout(state){
+            state.isLogin=false
         }
     }
 })
+
+export const authActions = authSlice.actions
