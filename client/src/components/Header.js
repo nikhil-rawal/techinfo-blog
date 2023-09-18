@@ -15,8 +15,6 @@ import { authActions } from "../redux/store";
 const Header = () => {
   //global state
 
-  // ? state for logout working??????????
-
   const isLogin = useSelector((state) => state.isLogin);
   const dispatch = useDispatch();
   const navigate = useNavigate();
